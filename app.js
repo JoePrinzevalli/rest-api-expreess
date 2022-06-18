@@ -3,6 +3,7 @@
 // load modules
 const express = require('express');
 const morgan = require('morgan');
+const { sequelize } = require('./models');
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
@@ -12,6 +13,24 @@ const app = express();
 
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
+
+//Test Connection to Database and Sync Models
+console.log('Testing the connection to the database...');
+
+(async () => {
+  try {
+    // Test the connection to the database
+    await sequelize.authenticate();
+    console.log('Connection to the database successful!');
+
+    // Sync the models
+    await sequelize.sync({ force: true });
+    console.log('Synchronizing the models with the database');
+
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+})()
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
