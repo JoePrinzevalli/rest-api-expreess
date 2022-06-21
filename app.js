@@ -25,10 +25,6 @@ console.log('Testing the connection to the database...');
     await sequelize.authenticate();
     console.log('Connection to the database successful!');
 
-    // Sync the models
-    // await sequelize.sync({ force: true });
-    // console.log('Synchronizing the models with the database');
-
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
@@ -70,10 +66,3 @@ app.set('port', process.env.PORT || 5000);
 const server = app.listen(app.get('port'), () => {
   console.log(`Express server is listening on port ${server.address().port}`);
 });
-
-// db.sequelize.sync({ force: true })
-//   .then( () => {
-//     const server = app.listen(app.get('port'), () => {
-//       console.log(`Express server is listening on port ${server.address().port}`);
-//     });
-//   });
