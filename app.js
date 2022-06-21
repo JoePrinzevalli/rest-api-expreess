@@ -4,6 +4,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const { sequelize } = require('./models');
+const routes = require('./routes');
+// const db = require('./models');
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
@@ -24,8 +26,8 @@ console.log('Testing the connection to the database...');
     console.log('Connection to the database successful!');
 
     // Sync the models
-    await sequelize.sync({ force: true });
-    console.log('Synchronizing the models with the database');
+    // await sequelize.sync({ force: true });
+    // console.log('Synchronizing the models with the database');
 
   } catch (error) {
     console.error('Unable to connect to the database:', error);
@@ -38,6 +40,9 @@ app.get('/', (req, res) => {
     message: 'Welcome to the REST API project!',
   });
 });
+
+// Add routes.
+app.use('/api', routes);
 
 // send 404 if no other route matched
 app.use((req, res) => {
@@ -65,3 +70,10 @@ app.set('port', process.env.PORT || 5000);
 const server = app.listen(app.get('port'), () => {
   console.log(`Express server is listening on port ${server.address().port}`);
 });
+
+// db.sequelize.sync({ force: true })
+//   .then( () => {
+//     const server = app.listen(app.get('port'), () => {
+//       console.log(`Express server is listening on port ${server.address().port}`);
+//     });
+//   });
