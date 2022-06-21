@@ -67,7 +67,7 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     try {
       await Course.create(req.body);
-      res.status(201).location('/').end();
+      res.status(201).location(`/courses/${Course.id}`).end();
     } catch (error) {
       if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
         const errors = error.errors.map(err => err.message);
@@ -90,7 +90,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
                 await course.update(req.body);
                 res.status(204).end();
             } else {
-                res.status(403).json({error});
+                res.status(403).json({error: {message: 'Only authenticed users signed up for this course can make changes'}});
             }
         } else {
             res.status(404).json({error: {message: `Course not found`}});
@@ -100,6 +100,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
             const errors = error.errors.map(err => err.message);
             res.status(400).json({errors});
         } else {
+          console.log('hi');
             throw error;
         }
     }
@@ -115,7 +116,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
                 await course.destroy();
                 res.status(204).end();
             } else {
-                res.status(403).json({error});
+                res.status(403).json({error: {message: 'Only authenticed users signed up for this course can delete this course'}});
             }
         } else {
             res.status(404).json({error: {message: `Course not found`}});

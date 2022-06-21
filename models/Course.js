@@ -32,7 +32,7 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
           },
           materialsNeeded: {
-            type: DataTypes.VIRTUAL,  
+            type: DataTypes.STRING,  
           },
     } , { sequelize });
 
