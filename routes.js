@@ -8,10 +8,7 @@ const router = express.Router();
 
 // Returns all properties and values for the currently authenticated User
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
-
-    const user = req.currentUser; //undefined atm, has to do with app.js line 28??
-    console.log(user);
-    //'user.firstName' not working, but i think 'User.firstName' is//
+    const user = req.currentUser;
   
     res.status(200).json({
       firstName: user.firstName,
@@ -81,6 +78,8 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     }
   }));
 
+//Updarwe function not working --fix
+
 // route that will update the corresponding course and return a 204 HTTP status code and no content.
   router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     try {
@@ -105,5 +104,31 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
         }
     }
   }))
+
+   //  route that will delete the corresponding course and return a 204 HTTP status code and no content.
+  router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
+    try {
+        let course = await Course.findOne({ where: { id: req.params.id } });
+        const user = req.currentUser;
+        if (course) {
+            if (user.id === course.userId) {
+                await course.destroy();
+                res.status(204).end();
+            } else {
+                res.status(403).json({error});
+            }
+        } else {
+            res.status(404).json({error: {message: `Course not found`}});
+        }
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError') {
+            const errors = error.errors.map(err => err.message);
+            res.status(400).json({errors});
+        } else {
+            throw error;
+        }
+    }
+  })
+  )
 
 module.exports = router;
